@@ -20,10 +20,10 @@ module.exports = (sequelize, DataTypes) => {
             password: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                validate: {
-                    notEmpty: true,
-                    len: [6, 18],
-                },
+                // validate: {
+                //     notEmpty: true,
+                //     len: [6, 255],
+                // },
             },
             birthDate: DataTypes.DATEONLY,
         },
