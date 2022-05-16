@@ -51,25 +51,25 @@ exports.getTodoById = async (req, res, next) => {
 
 exports.upDateTodo = async (req, res, next) => {
     try {
-        const { oldTitle, newTitle, completed, dueDate, id } = req.body;
-        console.log(req.body);
-        const user = await Todo.findOne({ where: { id: id ?? 0 } });
-        console.log(user);
-        if (!user) {
-            createError("title is not found", 400);
+        const { id } = req.params;
+        const { title, completed, dueDate, userId } = req.body;
+        const newValue = {};
+        if (title) {
+            newValue.title = title;
         }
-        if (!oldTitle) {
-            createError("title is not found", 400);
+        if (completed) {
+            newValue.completed = completed;
         }
-
-        await Todo.update(
-            {
-                title: newTitle,
-                completed,
-                dueDate,
-            },
-            { where: { id } }
-        );
+        if (dueDate) {
+            newValue.dueDate = dueDate;
+        }
+        const result = await Todo.update(newValue, {
+            where: { id: id, userId: userId },
+        });
+        console.log(result[0]);
+        if (result[0] === 0) {
+            createError("todo with this id not found", 400);
+        }
         res.json({ message: "update success" });
     } catch (err) {
         next(err);
@@ -78,6 +78,15 @@ exports.upDateTodo = async (req, res, next) => {
 
 exports.deleteTodo = async (req, res, next) => {
     try {
+        const { id } = req.params;
+        const { userId } = req.body;
+        const result = await Todo.destroy({
+            where: { id: id, userId: userId },
+        });
+        if (result === 0) {
+            createError("todo with this id not found", 400);
+        }
+        res.status(204).json({ message: "deleted successs" });
     } catch (err) {
         next(err);
     }

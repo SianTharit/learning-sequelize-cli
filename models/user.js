@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     );
 
     User.associate = (models) => {
+        // associate เอาไว้ Link กับ table todos
         User.hasMany(models.Todo, {
             foreignKey: {
                 allowNull: false,
